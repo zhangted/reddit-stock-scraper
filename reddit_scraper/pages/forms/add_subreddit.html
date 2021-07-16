@@ -1,0 +1,17 @@
+<form action="" method="post" class="">
+            {% csrf_token %}
+            <p>
+                {{ form.subreddit.label }}<br>
+                {{ form.subreddit}}<br>
+                {{ form.subreddit.errors }} 
+            </p>
+
+            <p>
+                <input type="submit" value="Submit">
+            </p>
+</form>
+
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+{% include 'links.html'%}

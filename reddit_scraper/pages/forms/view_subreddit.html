@@ -1,0 +1,23 @@
+
+<table>
+
+{% for r in rows %}
+<tr>
+    <td> {{ r.subreddit }} </td>
+    <td>
+<form method="delete" action="{% url 'delete'%}">
+            <p>
+                <input type="hidden" value="{{r.subreddit}}" name="subreddit">
+                <input type="submit" value="Delete">
+            </p>
+</form>
+</td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+{% include 'links.html'%}

@@ -1,0 +1,118 @@
+<style>
+    body {
+        font-family: Helvetica;
+        font-size: 15px;
+        font-weight: 100;
+        background-color: #e8e8e8;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+    }
+    li {
+        font-size: 13px;
+    }
+    a:link, a:visited{
+        text-decoration: None;
+        background-color: #323232;
+        padding: 10px 10px 10px 10px;
+        border-radius: 7px;
+        color: #e8e8e8;
+    }
+    div {
+        width: 140px;
+        padding-left: 20px;
+        text-align: right;
+    }
+    h1 {
+        padding-top: 40px;
+        font-weight: 100px;
+    }
+    h2 {
+        padding-top: 15px;
+    }
+    form {
+        padding-left: 100px;
+    }
+    select {
+        background-color: #e8e8e8;
+        color: #323232;
+        font-size: 14px;
+    }
+    .submit {
+        padding-top: 20px;
+    }
+</style>
+<body>
+<h1>Ticker Mentions in Subreddits</h1>
+
+
+<table>
+<form id="dropdown1">
+    <tr>
+        <td>
+            <label for="subreddit">Subreddit</label>
+        </td>
+        <td>
+            <select id="subreddit">
+                {% for sub in subreddits %}
+                    <option value="{{sub}}">{{sub}}</option>
+                {% endfor %}
+            </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <label for="hoursago">Interval&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        </td>
+        <td>
+            <select id="hoursago">
+                {% for interval in timeIntervals %}
+                    {% if interval >= 24 %}
+                        <option value="{{interval}}">{% widthratio interval 24 1 %} days ago</option>
+                    {% else %}
+                        <option value="{{interval}}">{{interval}} hours ago</option>
+                    {% endif %}
+                {% endfor %}
+            </select> from {{lastUpdated}} (UTC)
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <label for="format">Format&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        </td>
+        <td>
+            <select id="format">
+                <option value="api">API</option>
+                <option value="json">JSON</option>
+            </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+        </td>
+        <td class="submit">
+            <a href="#" id="make_url">Go</a>
+        </td>
+    </tr>
+</form>
+</table>
+
+
+<h2></h2>
+<li>Updates every hour. Last Updated {{ lastUpdated }}</li>
+<li>Multiple mentions of a ticker are counted once per title/post and once per comment. </li>
+<li>This project was created for fun. Please do not invest based on data here.</li>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type='application/javascript'>
+    $('#make_url').click(function(e) {
+        e.preventDefault();
+        var url = "/api?subreddit=" + $('#subreddit').val() + "&hoursago=" + $('#hoursago').val() + "&format=" + $('#format').val();
+        window.location.href=url
+    });
+</script>

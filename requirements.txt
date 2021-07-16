@@ -1,0 +1,6 @@
+gunicorn
+django-heroku
+lxml
+djangorestframework
+requests
+cssselect
