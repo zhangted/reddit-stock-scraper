@@ -29,7 +29,7 @@ def start():
     subreddits = models.Subreddit.objects.all()
     tickers = models.Ticker.objects.all()
     tickers_dict = {t.ticker for t in tickers}
-    for s in subreddits:
+    for s in subreddits: #for every subreddit, scrape the posts and comments and store into database.
         scraped_dict = {}
         get_post_title_data(s, 100, headers, scraped_dict)
         get_comment_data(s, 1000, headers, scraped_dict)
