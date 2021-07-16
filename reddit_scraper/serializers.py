@@ -40,6 +40,12 @@ class FrequencyEntriesList(generics.ListAPIView):
         this_hour = this_hour+timedelta(hours=-hours_ago)
         if subreddit is not None and hours_ago is not None:
             queryset = queryset.values('ticker').filter(subreddit=subreddit, last_updated__range=(this_hour, one_hour_later)).annotate(total=Sum('count')).order_by('-total')
+            """SELECT ticker, SUM(count) as total
+                FROM FrequencyEntries 
+                WHERE subreddit=input AND DATEDIFF(hour, last_updated, now)<=input
+                GROUP BY ticker 
+                ORDER BY total DESC
+            """
         return queryset
 
 
