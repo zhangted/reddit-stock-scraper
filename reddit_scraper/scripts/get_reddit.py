@@ -25,6 +25,7 @@ except:
     print('issue connecting to reddit api')
 
 def start():
+    """Call this to start scraping subreddits."""
     subreddits = models.Subreddit.objects.all()
     tickers = models.Ticker.objects.all()
     tickers_dict = {t.ticker for t in tickers}
@@ -39,14 +40,17 @@ def roundDown_Hour_UTC(utc_float):
     return (utc_float // 3600) * 3600
 
 def set_PostTitle_lastTimestamp(Subreddit, utc_float):
+    """Sets the last timestamp seen from a scraped post/title for a subreddit."""
     Subreddit.post_title_last_timestamp = utc_float
     Subreddit.save()
 
 def set_Comments_lastTimestamp(Subreddit, utc_float):
+    """Ssets the last timestamp seen from a scraped comment for a subreddit"""
     Subreddit.comments_last_timestamp = utc_float
     Subreddit.save()
 
 def set_SubredditUpdateTime(Subreddit):
+    """Sets the timestamp for when a subreddit was scraped."""
     Subreddit.last_updated = timezone.now()
     Subreddit.save()
 
@@ -155,7 +159,7 @@ def get_comment_data(SubredditObj, limit, headers, scraped_dict):
     set_Comments_lastTimestamp(SubredditObj, max_utc)
 
 def store_data(SubredditObj, scraped_dict):
-    """Stores dictionary created by scraping reddit posts in FrequencyEntries object."""
+    """Stores dictionary created by scraping reddit posts in FrequencyEntries database."""
     print(scraped_dict)
     for t in scraped_dict:
         query = models.FrequencyEntries(subreddit=SubredditObj.subreddit, ticker=t, count=scraped_dict[t])
