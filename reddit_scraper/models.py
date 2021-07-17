@@ -1,30 +1,66 @@
-from django.db import models
+from rest_framework import serializers, viewsets, generics, views
+from reddit_scraper import models
+from rest_framework.pagination import PageNumberPagination
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Sum
 
-class Ticker(models.Model):
-    """Contains valid tickers."""
-    ticker = models.CharField(max_length=10)
-    def __str__(self):
-        return self.ticker
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
-class Subreddit(models.Model):
-    """Contains subreddit name, last time frequencies were updated,
-    the last unix timestamp for a scraped post/title, and last unix
-    timestamp for a scraped comment, for a subreddit."""
-    subreddit = models.CharField(max_length=50)
-    last_updated = models.DateTimeField(null=True, blank=True)
-    post_title_last_timestamp = models.FloatField(null=True, blank=True)
-    comments_last_timestamp = models.FloatField(null=True, blank=True)
-    first_scraped = models.DateTimeField(auto_now=True)
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 40
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
-class TickerInfoBasic(models.Model):
-    """Basic info about a ticker."""
-    ticker = models.OneToOneField(Ticker, on_delete=models.CASCADE, related_name='TickerInfoBasic')
-    name = models.CharField(max_length=100, null=True, blank=True)
-    description = models.TextField(max_length=300, null=True, blank=True)
+class SubredditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Subreddit
+        fields =  ['subreddit', 'last_updated']
 
-class FrequencyEntries(models.Model):
-    """Contains frequency entries for a ticker in a subreddit w/ timestamp."""
-    subreddit = models.ForeignKey(Subreddit, on_delete=models.CASCADE, related_name='FrequencyEntriesObj')
-    ticker = models.CharField(max_length=10)
-    last_updated = models.DateTimeField(auto_now=True)
-    count = models.IntegerField()
+class SubredditViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Subreddit.objects.all()
+    serializer_class = SubredditSerializer
+
+class FrequencyEntriesSerializer(serializers.ModelSerializer):
+    total = serializers.SerializerMethodField()
+    class Meta:
+        model = models.FrequencyEntries
+        fields = ['ticker', 'total']
+    def get_total(self, obj):
+        return obj['total']
+
+class FrequencyEntriesList(generics.ListAPIView):
+    serializer_class = FrequencyEntriesSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        subreddit = self.request.query_params.get('subreddit', None)
+        queryset = models.Subreddit.objects.get(subreddit=subreddit)
+        hours_ago = int(self.request.query_params.get('hoursago', None))
+
+        this_hour = timezone.now().replace(minute=0, second=0, microsecond=0)
+        one_hour_later = this_hour + timedelta(hours=1)
+        this_hour = this_hour+timedelta(hours=-hours_ago)
+        if subreddit is not None and hours_ago is not None:
+            queryset = queryset.FrequencyEntriesObj.all().values('ticker').filter(last_updated__range=(this_hour, one_hour_later)).annotate(total=Sum('count')).order_by('-total')
+        return queryset
+        
+    @method_decorator(cache_page(60*60*2))
+    def get(self, *args, **kwargs):
+        return super().get(*args, **kwargs)
+
+
+
+
+
+
+"""
+class TFTViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = FrequencyEntriesSerializer
+    pagination_class = StandardResultsSetPagination
+    this_hour = timezone.now().replace(minute=0, second=0, microsecond=0)
+    one_hour_later = this_hour + timedelta(hours=1)
+    this_hour = this_hour+timedelta(hours=-24)
+    queryset = models.FrequencyEntries.objects.all().values('ticker').filter(subreddit='wallstreetbets', last_updated__range=(this_hour, one_hour_later)).annotate(total=Sum('count')).order_by('-total')
+"""
