@@ -24,9 +24,7 @@ class TickerInfoBasic(models.Model):
 
 class FrequencyEntries(models.Model):
     """Contains frequency entries for a ticker in a subreddit w/ timestamp."""
-    subreddit = models.CharField(max_length=50)
+    subreddit = models.ForeignKey(Subreddit, on_delete=models.CASCADE, related_name='FrequencyEntriesObj')
     ticker = models.CharField(max_length=10)
     last_updated = models.DateTimeField(auto_now=True)
     count = models.IntegerField()
-
-#exec(open('reddit_scraper/scripts/print.py').read())
