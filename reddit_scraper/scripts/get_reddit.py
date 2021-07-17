@@ -163,7 +163,7 @@ def store_data(SubredditObj, scraped_dict):
     """Stores dictionary created by scraping reddit posts in FrequencyEntries object."""
     print(SubredditObj.subreddit, scraped_dict)
     for t in scraped_dict:
-        query = models.FrequencyEntriesObj(subreddit=SubredditObj, ticker=t, count=scraped_dict[t])
+        query = models.FrequencyEntries(subreddit=SubredditObj, ticker=t, count=scraped_dict[t])
         query.save()
 
 #exec(open('reddit_scraper/scripts/get_reddit.py').read())
