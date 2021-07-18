@@ -48,7 +48,9 @@ class FrequencyEntriesList(generics.ListAPIView):
             """
         return queryset
 
-
+    @method_decorator(cache_page(60*60*2))
+     def get(self, *args, **kwargs):
+         return super().get(*args, **kwargs)
 
 
 
