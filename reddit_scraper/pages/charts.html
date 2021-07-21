@@ -1,0 +1,96 @@
+
+{% load static %}
+{% load tags %}
+<html>
+<link rel="stylesheet" href="{% static 'style.css'%}">
+    <head>
+        <title>Reddit Stock Mentions</title>
+        <!--[if lte IE 8]>
+            <script src="{% static 'js/excanvas.js' %}"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <h1>Top 40 Stock Ticker Mentions In
+            <select id="dynamic_select_subreddit">
+                {% for sub in subreddits %}
+                    {% if sub != subreddit %}
+                        <option value="{{sub}}">r/{{sub}}</option>
+                    {% else %}
+                        <option selected value="{{subreddit}}">r/{{subreddit}}</option>
+                {% endfor %}
+            </select>
+            since 
+            <select id="dynamic_select_hours_ago">
+                {% for interval in timeIntervals %}
+                    {% if interval != hours_ago %}
+                        <option value="{{interval}}">{% convert_hours interval %}</option>
+                    {% else %}
+                        <option selected value="{{hours_ago}}">{% convert_hours hours_ago %}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </h1>
+
+
+        <div class="chart">
+            <canvas id="myChart" width="900" height="400"style="background-color: white; padding:10px 10px 10px 10px;"\></canvas>
+        </div>
+
+        <span class="footer">
+        <a href="{% url 'about' %}">about</a> &nbsp;&nbsp;&nbsp;
+        <a href="{% url 'about-api' %}">api</a> &nbsp;&nbsp;&nbsp; 
+        <a href="mailto:tedzhangdev@gmail.com">report bug</a>
+        <a href="">github</a>
+        <br><br>
+        last updated at {{lastUpdated}} (UTC)<br><br>
+        </span>
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+        <script type="text/javascript">
+            var subreddit = '{{subreddit}}'
+            var hours_ago = '{{hours_ago}}'
+            $.get('{% url 'pie_chart_json' subreddit hours_ago %}', function(data) {
+                var ctx = $("#myChart").get(0).getContext("2d");
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    options: {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            align: 'middle',
+                            labels: {
+                                boxWidth: 25,
+                                padding: 4,
+                                fontStyle: 'bold',
+                            }
+                        },
+                    },
+                    responsive: false,
+                    data: data,
+                });
+            });
+        </script>
+        <script type="text/javascript">
+            $(function(){
+            $('#dynamic_select_subreddit').on('change', function () {
+                var subreddit = $(this).val(); // get selected value
+                var url = '{% url 'view_data' 1 hours_ago %}'.replace('1', subreddit);
+                if (url) { 
+                    window.location = url; // redirect
+                }
+                return false;
+            });
+            $('#dynamic_select_hours_ago').on('change', function () {
+                var hours_ago = $(this).val(); // get selected value
+                var url = '{% url 'view_data' subreddit 1 %}'.replace('1', hours_ago);
+                if (url) { 
+                    window.location = url; // redirect
+                }
+                return false;
+            });
+            });
+        </script>
+    </body>
+</html>

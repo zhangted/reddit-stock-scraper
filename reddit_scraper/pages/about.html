@@ -1,0 +1,14 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css'%}">
+
+<div></div>
+
+<li>this site collects stock ticker mentions in various subreddits without context analysis</li>
+<li>multiple mentions in a single post/title are counted once </li>
+<li>multiple mentions in a single comment are counted once </li>
+<li>click on an element in the legend to exclude a data point</li>
+
+
+
+<div></div>
+<a href="{% url 'index' %}">back </a>
