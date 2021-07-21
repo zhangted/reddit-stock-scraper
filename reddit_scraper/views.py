@@ -64,9 +64,7 @@ def view_data(request, subreddit, hours_ago):
     args['lastUpdated'] = models.Subreddit.objects.get(subreddit=args['subreddit']).last_updated #last update time
     args['subreddits'] = []
     for i in models.Subreddit.objects.all().values_list('subreddit'):
-        string = ''.join(i)
-        if string != args['subreddit']: #all subreddits except selected one
-            args['subreddits'].append(string)
+        args['subreddits'].append(''.join(i))
     args['hours_ago'] = int(escape(hours_ago)) #selected 'hours ago'
     args['timeIntervals'] = [1, 2, 3, 12, 24, 48, 168, 336, 720]
     return render(request, "charts.html", args)

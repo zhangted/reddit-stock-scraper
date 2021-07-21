@@ -26,7 +26,7 @@ SECRET_KEY = 'jppe+npp%_2sz6zg*yc)m+28!di-k19@h6!8yn8s_gff!hzme%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://reddit-stock-scrape.herokuapp.com']
 
 
 # Application definition
