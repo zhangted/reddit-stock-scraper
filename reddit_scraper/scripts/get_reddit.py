@@ -40,6 +40,10 @@ def get_tickers():
     """Return all Ticker rows."""
     return models.Ticker.objects.all()
 
+def get_ticker(t):
+    """Return Ticker obj with ticker=t"""
+    return models.Ticker.objects.get(ticker=t)
+
 def get_valid_tickers_dict():
     """Return all valid Tickers in a dict"""
     i = get_tickers()
@@ -163,7 +167,8 @@ def store_data(SubredditObj, scraped_dict):
     """Stores dictionary created by scraping reddit posts in FrequencyEntries object."""
     print(SubredditObj.subreddit, scraped_dict)
     for t in scraped_dict:
-        query = models.FrequencyEntries(subreddit=SubredditObj, ticker=t, count=scraped_dict[t])
+        query = models.FrequencyEntries(subreddit=SubredditObj, ticker=get_ticker(t), count=scraped_dict[t])
         query.save()
+
 
 #exec(open('reddit_scraper/scripts/get_reddit.py').read())

@@ -5,9 +5,9 @@ from reddit_scraper import models
 
 def run():
     html_elements = requests.get('https://stockanalysis.com/stocks/')
-    tickers = html.fromstring(html_elements.text)
-    tickers = tickers.cssselect("li")
-    tickers_set = set()
+    html_elements = html.fromstring(html_elements.text)
+    html_elements = html_elements.cssselect("li")
+    tickers_dict = {}
     invalidTickers = {
         'A',
         'G',
@@ -72,19 +72,24 @@ def run():
         'VOTE',
         'YOLO'
     }
-    for i in tickers:
-        t = i.text_content().split(" ")[0]
-        if t.isupper() and t not in invalidTickers:
-            tickers_set.add(t)
-            
-    for t in tickers_set:
+    for line in html_elements:
+        line = line.text_content().split(" ")
+        ticker, name = line[0], ' '.join(line[2:])
+        if ticker.isupper() and ticker not in invalidTickers:
+            tickers_dict[ticker] = name
+
+
+    for t in tickers_dict:
         if not models.Ticker.objects.filter(ticker=t).exists():
             TickerObj = models.Ticker(ticker=t)
             if TickerObj:
-                TickerInfoBasicObj = models.TickerInfoBasic(ticker=TickerObj)
+                TickerInfoBasicObj = models.TickerInfoBasic(ticker=TickerObj, name=tickers_dict[t])
                 if TickerInfoBasicObj:
                     TickerObj.save()
                     TickerInfoBasicObj.save()
+
+                    
+"""
                     #print(t + ' added to Tickers db')
                 #else:
                     #print('Error adding ticker to db')
@@ -93,6 +98,6 @@ def run():
         #else:
             #print(t + ' exists in Tickers db')
 
-
 #with open('tickers.json', 'w') as f:
     #json.dump(d, f)
+"""
