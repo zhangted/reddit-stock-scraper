@@ -17,6 +17,7 @@
                         <option value="{{sub}}">r/{{sub}}</option>
                     {% else %}
                         <option selected value="{{subreddit}}">r/{{subreddit}}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
             since 
@@ -39,7 +40,7 @@
         <span class="footer">
         <a href="{% url 'about' %}">about</a> &nbsp;&nbsp;&nbsp;
         <a href="{% url 'about-api' %}">api</a> &nbsp;&nbsp;&nbsp; 
-        <a href="mailto:tedzhangdev@gmail.com">report bug</a>
+        <a href="mailto:tedzhangdev@gmail.com">report bug</a> &nbsp;&nbsp;&nbsp;
         <a href="">github</a>
         <br><br>
         last updated at {{lastUpdated}} (UTC)<br><br>
