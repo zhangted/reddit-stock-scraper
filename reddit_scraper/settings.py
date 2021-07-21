@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'jppe+npp%_2sz6zg*yc)m+28!di-k19@h6!8yn8s_gff!hzme%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rest_framework',
     'reddit_scraper',
+    'chartjs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'reddit_scraper.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['reddit_scraper/pages/', 'reddit_scraper/pages/forms/'],
+        'DIRS': ['reddit_scraper/pages/', 'reddit_scraper/pages/forms/', 'reddit_scraper/templatetags'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
