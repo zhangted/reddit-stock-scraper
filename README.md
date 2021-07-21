@@ -6,5 +6,5 @@
 4. Run in cli/term:  <code>./manage.py createsuperuser</code>    to make admin account
 5. Go to <code>BaseURL/admin/</code> and login, then go to <code>BaseURL/links/</code> for the admin panel
 6. Add subreddits to scrape @ <code>BaseURL/add/</code>
-7. Run <code>./manage.py update_tickers</code> to add valid tickers and company names to database.
-8. Run <code>./manage.py scrape_reddit</code> to scrape reddit. (Schedule this command for automated scraping)
+7. Run in cli/term: <code>./manage.py update_tickers</code> to add valid tickers and company names to database.
+8. Run in cli/term: <code>./manage.py scrape_reddit</code> to scrape reddit. (Schedule this command for automated scraping)
