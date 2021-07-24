@@ -5,10 +5,40 @@
 
 
 <div>
-    /view/<strong>[subreddit]</strong>/<strong>[hours ago]</strong><br>>>>>>Custom chart of mentions in a subreddit, some hours ago<p><p></div>
-    /api/?subreddit=<strong>[subreddit]</strong>&hoursago=<strong>[hours ago]</strong>&format=json</strong><br>
->>>>>>JSON object of mentions in a subreddit, some hours ago
-</li>
+    <center>
+    <!--
+    <table>
+        <tr>
+            <td>
+                <strong>Valid [subreddit]</strong> 
+            </td>
+        </tr>
+        {% for subreddit in subredditNames %}
+            <tr>
+                <td>
+                    {{ subreddit }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>-->
+    </center><br><br>
+
+    <div class="apiInfo">
+    /view/<strong>[subreddit]</strong>/<strong>[hours ago]</strong><br><br>
+    -Custom chart of mentions in a subreddit, some hours ago<br><br>
+    <a href='{% url 'view_data' 'wallstreetbets' '48' %}'>example link</a><br><br>
+    </div><br>
+    <div class="apiInfo">
+    /api/?subreddit=<strong>[subreddit]</strong>&hoursago=<strong>[hours ago]</strong>&format=json</strong><br><br>
+    -JSON object of mentions in a subreddit, some hours ago<br><br>
+    <a href='/api/?subreddit=wallstreetbets&hoursago=200&format=json'>example link</a><br><br>    
+    </div><br>
+    <div class="apiInfo">
+    /api/ticker/?ticker=<strong>[ticker]</strong>&format=json<br><br>
+    -JSON object of ticker mentions in each subreddit<br><br>
+    <a href='/api/ticker/?ticker=SPY&format=json'>example link</a><br><br>
+    </div>
+
 </div>
 
 
